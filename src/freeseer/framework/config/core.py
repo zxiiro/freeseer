@@ -1,3 +1,4 @@
+import abc
 import functools
 
 from .exceptions import (
@@ -41,7 +42,7 @@ class Option(object):
         raise NotImplementedError()
 
 
-class ConfigBase(type):
+class ConfigBase(abc.ABCMeta):
     def __new__(meta, name, bases, dct):
         dct, options = meta.find_options(dct)
         dct['options'] = options
@@ -93,6 +94,9 @@ class Config(object):
         else:
             raise InvalidOptionValueError(option)
 
+    # You must implement these!
+
+    @abc.abstractmethod
     def load(self):
         '''
         Populates the Config from somewhere.
@@ -100,8 +104,19 @@ class Config(object):
         It should iterate over all options in self.options and determine the
         value to store by using option.decode(..).
         '''
-        raise NotImplementedError()
+        pass
 
+    @abc.abstractmethod
+    def load_if_possible(self):
+        '''
+        Tries to call self.load() if possible. Otherwise, it should fail gracefully.
+
+        For example, if your class loads its values from a file, you can check if the
+        file exists before calling self.load().
+        '''
+        pass
+
+    @abc.abstractmethod
     def save(self):
         '''
         Persists the Config to somewhere.
@@ -109,4 +124,4 @@ class Config(object):
         It should iterate over all options in self.options and determine the
         value to persis by using option.encode(..).
         '''
-        raise NotImplementedError()
+        pass
