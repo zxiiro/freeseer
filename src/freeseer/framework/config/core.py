@@ -80,7 +80,7 @@ class Config(object):
             if not option.is_required():
                 self.set_value(name, option, option.default)
 
-    # Override these!
+    # You probably will not need to override these:
 
     def get_value(self, name, option):
         if name in self.values:
