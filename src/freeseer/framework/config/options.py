@@ -1,3 +1,5 @@
+import os
+
 from .core import Option
 
 
@@ -32,3 +34,16 @@ class BooleanOption(Option):
 
     def decode(self, value):
         return (value == 'true') and True or False
+
+
+class FolderOption(StringOption):
+    def __init__(self, default=Option.NotSpecified, auto_create=False):
+        self.auto_create = auto_create
+        super(StringOption, self).__init__(default)
+
+    def is_valid(self, value):
+        return self.auto_create or os.path.isdir(value)
+
+    def post_get(self, value):
+        if not os.path.exists(value):
+            os.makedirs(value)
