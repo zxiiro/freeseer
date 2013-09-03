@@ -9,6 +9,8 @@ from .exceptions import (
 
 
 class Option(object):
+    __metaclass__ = abc.ABCMeta
+
     class NotSpecified(object):
         pass
 
@@ -28,24 +30,27 @@ class Option(object):
 
     # Override these!
 
+    @abc.abstractmethod
     def is_valid(self, value):
-        raise NotImplementedError()
+        pass
 
+    @abc.abstractmethod
     def encode(self, value):
         '''
         Encodes value into a string.
 
         Should raise something if unable to encode.
         '''
-        raise NotImplementedError()
+        pass
 
+    @abc.abstractmethod
     def decode(self, value):
         '''
         Decodes value into a proper Option value.
 
         Should raise something if unable to decode.
         '''
-        raise NotImplementedError()
+        pass
 
 
 class ConfigBase(abc.ABCMeta):
