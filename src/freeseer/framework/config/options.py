@@ -21,3 +21,14 @@ class IntegerOption(Option):
 
     def decode(self, value):
         return int(value)
+
+
+class BooleanOption(Option):
+    def is_valid(self, value):
+        return isinstance(value, bool)
+
+    def encode(self, value):
+        return value and 'true' or 'false'
+
+    def decode(self, value):
+        return (value == 'true') and True or False
