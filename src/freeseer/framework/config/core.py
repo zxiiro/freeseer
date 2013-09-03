@@ -3,7 +3,6 @@ import functools
 
 from .exceptions import (
     InvalidOptionValueError,
-    InvalidOptionDefaultValueError,
     OptionValueNotSetError,
 )
 
@@ -16,8 +15,6 @@ class Option(object):
 
     def __init__(self, default=NotSpecified):
         self.default = default
-        if not self.is_required and not self.is_valid(default):
-            raise InvalidOptionDefaultValueError(self)
 
     def is_required(self):
         return self.default == self.NotSpecified
@@ -99,14 +96,14 @@ class Config(object):
             option.post_get(value)
             return value
         else:
-            raise OptionValueNotSetError(option)
+            raise OptionValueNotSetError(name, option)
 
     def set_value(self, name, option, value):
         if option.is_valid(value):
             self.values[name] = value
             option.post_set(value)
         else:
-            raise InvalidOptionValueError(option)
+            raise InvalidOptionValueError(name, option)
 
     # You must implement these!
 
