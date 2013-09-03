@@ -47,3 +47,12 @@ class FolderOption(StringOption):
     def post_get(self, value):
         if not os.path.exists(value):
             os.makedirs(value)
+
+
+class ChoiceOption(StringOption):
+    def __init__(self, choices, default=Option.NotSpecified):
+        self.choices = choices
+        super(ChoiceOption, self).__init__(default)
+
+    def is_valid(self, value):
+        return value in self.choices
