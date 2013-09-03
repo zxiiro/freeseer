@@ -20,6 +20,12 @@ class Option(object):
     def is_required(self):
         return self.default == self.NotSpecified
 
+    def post_get(self, value):
+        pass
+
+    def post_set(self, value):
+        pass
+
     # Override these!
 
     def is_valid(self, value):
@@ -84,13 +90,16 @@ class Config(object):
 
     def get_value(self, name, option):
         if name in self.values:
-            return self.values[name]
+            value = self.values[name]
+            option.post_get(value)
+            return value
         else:
             raise OptionValueNotSetError(option)
 
     def set_value(self, name, option, value):
         if option.is_valid(value):
             self.values[name] = value
+            option.post_set(value)
         else:
             raise InvalidOptionValueError(option)
 
