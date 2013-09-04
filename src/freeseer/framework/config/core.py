@@ -1,4 +1,5 @@
 import abc
+import collections
 import functools
 import os
 
@@ -65,8 +66,9 @@ class ConfigBase(abc.ABCMeta):
     @staticmethod
     def find_options(dct):
         new_dct = {}
-        options = {}
-        for name, attr in dct.iteritems():
+        options = collections.OrderedDict()
+        for name in sorted(dct.keys()):
+            attr = dct[name]
             if name.startswith('_') or not isinstance(attr, Option):
                 new_dct[name] = attr
             else:
