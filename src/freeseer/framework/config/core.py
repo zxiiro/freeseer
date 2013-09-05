@@ -31,6 +31,9 @@ class Option(object):
 
     @abc.abstractmethod
     def is_valid(self, value):
+        '''
+        Checks if a value is valid for this option.
+        '''
         pass
 
     @abc.abstractmethod
