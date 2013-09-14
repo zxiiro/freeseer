@@ -1,2 +1,2 @@
-from .configparser import ConfigParserManager
-from .jsonmanager import JSONConfigManager
+from .configparser import ConfigParserStorage
+from .jsonmanager import JSONConfigStorage

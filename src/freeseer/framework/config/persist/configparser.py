@@ -1,14 +1,13 @@
 import ConfigParser
 
-from ..core import ConfigManager
+from ..core import ConfigStorage
 
 
-class ConfigParserManager(ConfigManager):
-    def load(self, config_class, section):
+class ConfigParserStorage(ConfigStorage):
+    def load(self, config_instance, section):
         parser = ConfigParser.ConfigParser()
-        parser.read([self.filepath])
+        parser.read([self._filepath])
 
-        config_instance = config_class()
         for name, option in config_instance.options.iteritems():
             if not parser.has_option(section, name):
                 continue
@@ -19,7 +18,7 @@ class ConfigParserManager(ConfigManager):
 
     def store(self, config_instance, section):
         parser = ConfigParser.ConfigParser()
-        parser.read([self.filepath])
+        parser.read([self._filepath])
 
         if not parser.has_section(section):
             parser.add_section(section)
@@ -29,5 +28,5 @@ class ConfigParserManager(ConfigManager):
             clean = option.encode(raw)
             parser.set(section, name, clean)
 
-        with open(self.filepath, 'wc') as config_fd:
+        with open(self._filepath, 'wc') as config_fd:
             parser.write(config_fd)

@@ -1,7 +1,6 @@
 import abc
 import collections
 import functools
-import os
 
 from .exceptions import (
     InvalidOptionValueError,
@@ -112,31 +111,17 @@ class Config(object):
             raise InvalidOptionValueError(name, option)
 
 
-class ProfileManager(object):
-    def __init__(self, folder, name):
-        self.name = name
-        self.folder = folder
-        self.full_path = os.path.join(folder, name)
-
-        if not os.path.exists(self.full_path):
-            os.makedirs(self.full_path)
-
-    def get_filepath(self, name):
-        return os.path.join(self.full_path, name)
-
-
-class ConfigManager(object):
+class ConfigStorage(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, manager, filename):
-        self.manager = manager
-        self.filename = filename
-        self.filepath = manager.get_filepath(filename)
+    def __init__(self, profile, filename):
+        self._profile = profile
+        self._filepath = profile.get_filepath(filename)
 
     # Override these!
 
     @abc.abstractmethod
-    def load(self, config_class):
+    def load(self, config_instance):
         '''
         Populates the Config from somewhere.
 

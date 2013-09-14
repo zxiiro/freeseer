@@ -1,29 +1,25 @@
 import json
 import os
 
-from ..core import ConfigManager
+from ..core import ConfigStorage
 
 
-class JSONConfigManager(ConfigManager):
-    def __init__(self, manager, filename):
-        super(JSONConfigManager, self).__init__(manager, filename)
-
+class JSONConfigStorage(ConfigStorage):
     def parse_json(self):
-        if os.path.isfile(self.filepath):
-            return json.load(open(self.filepath))
+        if os.path.isfile(self._filepath):
+            return json.load(open(self._filepath))
         else:
             return {}
 
     def write_json(self, dct):
-        with open(self.filepath, 'wc') as config_fd:
+        with open(self._filepath, 'wc') as config_fd:
             config_fd.write(json.dumps(dct,
                                        sort_keys=True,
                                        indent=4,
                                        separators=(',', ': ')))
 
-    def load(self, config_class, section):
+    def load(self, config_instance, section):
         dct = self.parse_json()
-        config_instance = config_class()
         if section not in dct:
             return config_instance
 
