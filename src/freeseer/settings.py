@@ -55,7 +55,7 @@ class FreeseerConfig(Config):
         '1080p': '1920x1080'
     }
 
-    videodir = options.FolderOption('/home/mtomwing/Videos', auto_create=True)
+    videodir = options.FolderOption('~/Videos', auto_create=True)
     auto_hide = options.BooleanOption(True)
     resolution = options.ChoiceOption(resmap.keys(), 'default')
     enable_audio_recording = options.BooleanOption(True)
