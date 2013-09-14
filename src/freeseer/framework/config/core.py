@@ -18,11 +18,20 @@ class Option(object):
     def is_required(self):
         return self.default == self.NotSpecified
 
-    def post_get(self, value):
-        pass
+    # Override these if you know what you're doing
 
-    def post_set(self, value):
-        pass
+    def pre_set(self, value):
+        '''
+        Do something before value is stored for this option.
+        '''
+        return value
+
+    def presentation(self, value):
+        '''
+        Returns a modified version of value for use within the application
+        that does not affect the persisted version.
+        '''
+        return value
 
     # Override these!
 
@@ -58,8 +67,10 @@ class ConfigBase(abc.ABCMeta):
         dct['options'] = options
         cls = super(ConfigBase, meta).__new__(meta, name, bases, dct)
         for opt_name, option in options.iteritems():
-            opt_get = functools.partial(cls.get_value, name=opt_name, option=option)
-            opt_set = functools.partial(cls._set_value, name=opt_name, option=option)
+            opt_get = functools.partial(cls.get_value, name=opt_name,
+                                        option=option, presentation=True)
+            opt_set = functools.partial(cls._set_value, name=opt_name,
+                                        option=option)
             setattr(cls, opt_name, property(opt_get, opt_set))
         return cls
 
@@ -93,18 +104,20 @@ class Config(object):
 
     # You probably will not need to override these:
 
-    def get_value(self, name, option):
+    def get_value(self, name, option, presentation=False):
         if name in self.values:
             value = self.values[name]
-            option.post_get(value)
-            return value
+            if presentation:
+                return option.presentation(value)
+            else:
+                return value
         else:
             raise OptionValueNotSetError(name, option)
 
     def set_value(self, name, option, value):
         if option.is_valid(value):
-            self.values[name] = value
-            option.post_set(value)
+            mod_value = option.pre_set(value)
+            self.values[name] = mod_value
         else:
             raise InvalidOptionValueError(name, option)
 

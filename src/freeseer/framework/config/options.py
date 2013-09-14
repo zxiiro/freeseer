@@ -44,10 +44,12 @@ class FolderOption(StringOption):
     def is_valid(self, value):
         return self.auto_create or os.path.isdir(value)
 
-    def post_get(self, value):
-        value = os.path.expanduser(value)
-        if not os.path.exists(value):
-            os.makedirs(value)
+    def presentation(self, value):
+        realpath = os.path.expanduser(value)
+        if self.auto_create:
+            if not os.path.exists(realpath):
+                os.makedirs(realpath)
+        return realpath
 
 
 class ChoiceOption(StringOption):
