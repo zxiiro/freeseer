@@ -25,7 +25,6 @@
 import logging
 import os
 import sys
-import time
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QCursor
@@ -35,7 +34,6 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
-from freeseer import settings, __version__
 from freeseer.framework.presentation import Presentation
 from freeseer.framework.failure import Failure
 from freeseer.framework.util import get_free_space
@@ -46,16 +44,18 @@ from freeseer.frontend.record.RecordingController import RecordingController
 from freeseer.frontend.record.RecordingWidget import RecordingWidget
 from freeseer.frontend.record.ReportDialog import ReportDialog
 from freeseer.frontend.talkeditor.talkeditor import TalkEditorApp
+from freeseer import settings
 
 log = logging.getLogger(__name__)
 
 
 class RecordApp(FreeseerApp):
     """Freeseer's main GUI class."""
-    def __init__(self):
+
+    def __init__(self, profile, storage, config):
         FreeseerApp.__init__(self)
 
-        self.controller = RecordingController()
+        self.controller = RecordingController(profile, config)
         self.config = self.controller.config
         self.db = self.controller.db
 
@@ -66,11 +66,11 @@ class RecordApp(FreeseerApp):
         self.setCentralWidget(self.mainWidget)
         self.reportWidget = ReportDialog()
         self.reportWidget.setModal(True)
-        self.clientWidget = ClientDialog(self.config.configdir, self.db)
-        self.configToolApp = ConfigToolApp(self)
+        self.clientWidget = ClientDialog(settings.configdir, self.db)
+        self.configToolApp = ConfigToolApp(profile, storage, config)
         self.configToolApp.setWindowModality(QtCore.Qt.ApplicationModal)
         self.configToolApp.setWindowFlags(QtCore.Qt.Dialog)
-        self.talkEditorApp = TalkEditorApp(self)
+        self.talkEditorApp = TalkEditorApp(config)
         self.talkEditorApp.setWindowModality(QtCore.Qt.ApplicationModal)
         self.talkEditorApp.setWindowFlags(QtCore.Qt.Dialog)
 
@@ -430,13 +430,13 @@ class RecordApp(FreeseerApp):
 
         Uses the statusLabel for the display.
         """
-        time = "%d:%02d" % (self.time_minutes, self.time_seconds)
+        frmt_time = "%d:%02d" % (self.time_minutes, self.time_seconds)
         self.time_seconds += 1
         if self.time_seconds == 60:
             self.time_seconds = 0
             self.time_minutes += 1
 
-        self.mainWidget.statusLabel.setText("{} {} --- {} {} --- {}".format(self.elapsedTimeString, time,
+        self.mainWidget.statusLabel.setText("{} {} --- {} {} --- {}".format(self.elapsedTimeString, frmt_time,
                                                                      self.freeSpaceString, get_free_space(self.config.videodir),
                                                                      self.recordingString))
 
@@ -511,7 +511,6 @@ class RecordApp(FreeseerApp):
 
     def report(self):
         talk_id = self.current_presentation_id()
-        presentation = self.current_presentation()
         i = self.reportWidget.reportCombo.currentIndex()
 
         failure = Failure(talk_id, self.reportWidget.commentEdit.text(), self.reportWidget.options[i], self.reportWidget.releaseCheckBox.isChecked())
@@ -605,3 +604,4 @@ class RecordApp(FreeseerApp):
 
     def open_talkeditor(self):
         self.talkEditorApp.show()
+        self.load_event_list()

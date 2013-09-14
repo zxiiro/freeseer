@@ -51,11 +51,17 @@ else:
     '''Launch Freeseer Configuration GUI if no arguments are passed'''
     import signal
     from PyQt4 import QtGui
+    from freeseer import settings
     from freeseer.frontend.configtool.configtool import ConfigToolApp
 
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     app = QtGui.QApplication(sys.argv)
-    main = ConfigToolApp()
-    main.show()
-    sys.exit(app.exec_())
 
+    # Setup Config Stuff
+    profile, storage = settings.setup_profile_and_storage()
+    config = storage.load(settings.FreeseerConfig(), 'Global')
+
+    main = ConfigToolApp(profile, storage, config)
+    main.show()
+
+    sys.exit(app.exec_())

@@ -41,13 +41,10 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
-
 from freeseer import settings
-from freeseer.framework.config import Config
 from freeseer.framework.database import QtDBConnector
 from freeseer.framework.presentation import Presentation
 from freeseer.frontend.qtcommon.FreeseerApp import FreeseerApp
-from freeseer.frontend.qtcommon.Resource import resource_rc
 
 from EditorWidget import EditorWidget
 from AddTalkWidget import AddTalkWidget
@@ -59,10 +56,8 @@ class TalkEditorApp(FreeseerApp):
     '''
     Freeseer talk database editor main gui class
     '''
-    def __init__(self, recordapp=None):
+    def __init__(self, config):
         FreeseerApp.__init__(self)
-
-        self.recordapp = recordapp
 
         icon = QIcon()
         icon.addPixmap(QPixmap(_fromUtf8(":/freeseer/logo.png")), QIcon.Normal, QIcon.Off)
@@ -84,7 +79,7 @@ class TalkEditorApp(FreeseerApp):
         # Initialize geometry, to be used for restoring window positioning.
         self.geometry = None
 
-        self.config = Config(settings.configdir)
+        self.config = config
         self.db = QtDBConnector(settings.configdir)
 
         #
@@ -213,11 +208,6 @@ class TalkEditorApp(FreeseerApp):
 
         self.hide_add_talk_widget()
 
-        # If this is launched from the recording app
-        # refresh the talk list
-        if self.recordapp:
-            self.recordapp.load_event_list()
-
     def remove_talk(self):
         try:
             row_clicked = self.editorWidget.editor.currentIndex().row()
@@ -259,7 +249,6 @@ class TalkEditorApp(FreeseerApp):
         event.accept()
 
     def csv_file_select(self):
-        dirpath = str(self.editorWidget.csvLineEdit.text())
         fname = QFileDialog.getOpenFileName(self, 'Select file', "", "*.csv")
         if fname:
             self.editorWidget.csvLineEdit.setText(fname)
@@ -272,7 +261,6 @@ class TalkEditorApp(FreeseerApp):
             self.presentationModel.select()
 
     def export_talks_to_csv(self):
-        dirpath = str(self.editorWidget.csvLineEdit.text())
         fname = QFileDialog.getSaveFileName(self, 'Select file', "", "*.csv")
         if fname:
             self.db.export_talks_to_csv(fname)
