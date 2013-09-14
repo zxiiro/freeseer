@@ -1,7 +1,7 @@
 import json
 import os
 
-from ..core import ConfigStorage
+from freeseer.framework.config.core import ConfigStorage
 
 
 class JSONConfigStorage(ConfigStorage):

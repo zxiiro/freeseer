@@ -1,6 +1,6 @@
 import os
 
-from .core import Option
+from freeseer.framework.config.core import Option
 
 
 class StringOption(Option):
@@ -45,6 +45,7 @@ class FolderOption(StringOption):
         return self.auto_create or os.path.isdir(value)
 
     def post_get(self, value):
+        value = os.path.expanduser(value)
         if not os.path.exists(value):
             os.makedirs(value)
 

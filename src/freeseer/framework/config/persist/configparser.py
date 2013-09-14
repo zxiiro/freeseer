@@ -1,6 +1,6 @@
 import ConfigParser
 
-from ..core import ConfigStorage
+from freeseer.framework.config.core import ConfigStorage
 
 
 class ConfigParserStorage(ConfigStorage):

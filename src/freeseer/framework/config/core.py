@@ -2,10 +2,8 @@ import abc
 import collections
 import functools
 
-from .exceptions import (
-    InvalidOptionValueError,
-    OptionValueNotSetError,
-)
+from freeseer.framework.config.exceptions import InvalidOptionValueError
+from freeseer.framework.config.exceptions import OptionValueNotSetError
 
 
 class Option(object):

@@ -1,2 +1,2 @@
-from .configparser import ConfigParserStorage
-from .jsonmanager import JSONConfigStorage
+from freeseer.framework.config.persist.configparser import ConfigParserStorage
+from freeseer.framework.config.persist.jsonmanager import JSONConfigStorage
