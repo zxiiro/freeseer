@@ -21,3 +21,5 @@
 
 # For support, questions, suggestions or any other inquiries, visit:
 # http://wiki.github.com/Freeseer/freeseer/
+
+from freeseer.framework.config.core import Config
