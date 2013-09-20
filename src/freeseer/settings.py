@@ -45,9 +45,11 @@ def setup_profile_and_storage(name=default_profile_name, filename=default_config
 
 
 class FreeseerConfig(Config):
-    # TODO: This should probably be in a constants file somewhere
     resmap = {
+        # No Scaling
         'default': '0x0',
+
+        # Scaling
         '240p': '320x240',
         '360p': '480x360',
         '480p': '640x480',
