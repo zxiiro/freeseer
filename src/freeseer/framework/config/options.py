@@ -25,6 +25,17 @@ class IntegerOption(Option):
         return int(value)
 
 
+class FloatOption(Option):
+    def is_valid(self, value):
+        return isinstance(value, float)
+
+    def encode(self, value):
+        return str(value)
+
+    def decode(self, value):
+        return float(value)
+
+
 class BooleanOption(Option):
     def is_valid(self, value):
         return isinstance(value, bool)
