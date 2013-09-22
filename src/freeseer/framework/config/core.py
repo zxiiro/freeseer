@@ -90,17 +90,26 @@ class ConfigBase(abc.ABCMeta):
 class Config(object):
     __metaclass__ = ConfigBase
 
-    def __init__(self):
+    def __init__(self, writeback=None, writeback_args=None):
+        self._writeback = writeback
+        self._writeback_args = writeback_args
+
         self.values = {}
         self.set_defaults()
+
 
     def _set_value(self, value, name, option):
         self.set_value(name, option, value)
 
+
     def set_defaults(self):
         for name, option in self.options.iteritems():
             if not option.is_required():
-                self.set_value(name, option, option.default)
+                self.set_value(name, option, option.default, writeback=False)
+
+    def writeback_if_configured(self):
+        if self._writeback:
+            self._writeback.store(self, *self._writeback_args)
 
     # You probably will not need to override these:
 
@@ -114,12 +123,16 @@ class Config(object):
         else:
             raise OptionValueNotSetError(name, option)
 
-    def set_value(self, name, option, value):
+    def set_value(self, name, option, value, writeback=True):
         if option.is_valid(value):
             mod_value = option.pre_set(value)
             self.values[name] = mod_value
         else:
             raise InvalidOptionValueError(name, option)
+
+        if writeback:
+            self.writeback_if_configured()
+
 
 
 class ConfigStorage(object):
