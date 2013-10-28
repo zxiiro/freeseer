@@ -42,14 +42,14 @@ class TestDatabase(unittest.TestCase):
 
         '''
         self.configdir = tempfile.mkdtemp()
-        self.db = QtDBConnector(self.configdir)
+        self.db_file = os.path.join(self.configdir, 'presentations.db')
+        self.db = QtDBConnector(self.db_file)
 
     def tearDown(self):
         '''
         Generic unittest.TestCase.tearDown()
         '''
         shutil.rmtree(self.configdir)
-        del self.db
 
     def test_get_talks(self):
         """Simply test that a query is returned"""
