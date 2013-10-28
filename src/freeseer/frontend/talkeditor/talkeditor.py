@@ -41,10 +41,9 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
-from freeseer import settings
-from freeseer.framework.database import QtDBConnector
 from freeseer.framework.presentation import Presentation
 from freeseer.frontend.qtcommon.FreeseerApp import FreeseerApp
+from freeseer import settings
 
 from EditorWidget import EditorWidget
 from AddTalkWidget import AddTalkWidget
@@ -56,8 +55,11 @@ class TalkEditorApp(FreeseerApp):
     '''
     Freeseer talk database editor main gui class
     '''
-    def __init__(self, config):
+    def __init__(self, config, db):
         FreeseerApp.__init__(self)
+
+        self.config = config
+        self.db = db
 
         icon = QIcon()
         icon.addPixmap(QPixmap(_fromUtf8(":/freeseer/logo.png")), QIcon.Normal, QIcon.Off)
@@ -78,9 +80,6 @@ class TalkEditorApp(FreeseerApp):
 
         # Initialize geometry, to be used for restoring window positioning.
         self.geometry = None
-
-        self.config = config
-        self.db = QtDBConnector(settings.configdir)
 
         #
         # Setup Menubar

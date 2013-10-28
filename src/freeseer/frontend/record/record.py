@@ -52,12 +52,12 @@ log = logging.getLogger(__name__)
 class RecordApp(FreeseerApp):
     """Freeseer's main GUI class."""
 
-    def __init__(self, profile, storage, config):
+    def __init__(self, profile, config):
         FreeseerApp.__init__(self)
 
-        self.controller = RecordingController(profile, config)
-        self.config = self.controller.config
-        self.db = self.controller.db
+        self.db = profile.get_database()
+        self.config = config
+        self.controller = RecordingController(profile, self.db, self.config)
 
         self.resize(550, 450)
 
@@ -67,10 +67,10 @@ class RecordApp(FreeseerApp):
         self.reportWidget = ReportDialog()
         self.reportWidget.setModal(True)
         self.clientWidget = ClientDialog(settings.configdir, self.db)
-        self.configToolApp = ConfigToolApp(profile, storage, config)
+        self.configToolApp = ConfigToolApp(profile, config)
         self.configToolApp.setWindowModality(QtCore.Qt.ApplicationModal)
         self.configToolApp.setWindowFlags(QtCore.Qt.Dialog)
-        self.talkEditorApp = TalkEditorApp(config)
+        self.talkEditorApp = TalkEditorApp(self.config, self.db)
         self.talkEditorApp.setWindowModality(QtCore.Qt.ApplicationModal)
         self.talkEditorApp.setWindowFlags(QtCore.Qt.Dialog)
 

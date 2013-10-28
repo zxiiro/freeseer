@@ -46,10 +46,16 @@ if __name__ == '__main__':
         from freeseer.frontend.record.RecordingController import RecordingController
         from freeseer import settings
 
-        profile, storage = settings.setup_profile_and_storage(name=args.profile)
-        config = storage.load(settings.FreeseerConfig(), 'Global')
+        # TODO: Abstract the database stuff away from here as it's only
+        #       used in conjunction with talks.
+        profile = settings.profile_manager.get(args.profile)
+        config = profile.get_config('freeseer.conf', settings.FreeseerConfig,
+                                    storage_args=['Global'], read_only=False)
+        # XXX: There should only be 1 database per user. Workaround for this
+        #      is to put it in the 'default' profile.
+        db = settings.profile_manager.get().get_database()
 
-        app = RecordingController(profile, config, cli=True)
+        app = RecordingController(profile, db, config, cli=True)
 
         if args.talk:
             if app.record_talk_id(args.talk): sys.exit(gobject.MainLoop().run())
@@ -57,18 +63,17 @@ if __name__ == '__main__':
             if app.record_filename(args.filename): sys.exit(gobject.MainLoop().run())
         elif args.show_talks:
             app.print_talks()
-        
-
     else:
         # Launch the GUI if no arguments are passed
         from PyQt4.QtGui import QApplication
         from freeseer.frontend.record.record import RecordApp
         from freeseer import settings
 
-        profile, storage = settings.setup_profile_and_storage()
-        config = storage.load(settings.FreeseerConfig(), 'Global')
+        profile = settings.profile_manager.get()
+        config = profile.get_config('freeseer.conf', settings.FreeseerConfig,
+                                    storage_args=['Global'], read_only=False)
 
         app = QApplication(sys.argv)
-        main = RecordApp(profile, storage, config)
+        main = RecordApp(profile, config)
         main.show()
         sys.exit(app.exec_())

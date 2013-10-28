@@ -36,7 +36,8 @@ if __name__ == '__main__':
         from freeseer.framework.database import QtDBConnector
         from freeseer.framework.presentation import Presentation
 
-        db = QtDBConnector(settings.configdir)
+        profile = settings.profile_manager.get()
+        db = profile.get_database()
 
         parser = argparse.ArgumentParser(description='Freeseer TalkEditor Utility')
         parser.add_argument("action", choices=['add-talk', 'remove-talk', 'clear-database'])
@@ -70,10 +71,12 @@ if __name__ == '__main__':
         from PyQt4.QtGui import QApplication
         from freeseer.frontend.talkeditor.talkeditor import TalkEditorApp
 
-        _, storage = settings.setup_profile_and_storage()
-        config = storage.load(settings.FreeseerConfig(), 'Global')
+        profile = settings.profile_manager.get()
+        config = profile.get_config('freeseer.conf', settings.FreeseerConfig,
+                                    storage_args=['Global'], read_only=True)
+        db = profile.get_database()
 
         app = QApplication(sys.argv)
-        main = TalkEditorApp(config)
+        main = TalkEditorApp(config, db)
         main.show()
         sys.exit(app.exec_())

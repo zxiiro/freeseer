@@ -54,8 +54,12 @@ class ConfigToolApp(FreeseerApp):
     ConfigTool is used to tune settings used by the Freeseer Application
     '''
 
-    def __init__(self, profile, storage, config):
+    def __init__(self, profile, config):
         FreeseerApp.__init__(self)
+
+        # Load Config Stuff
+        self.profile = profile
+        self.config = config
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/freeseer/logo.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -75,11 +79,6 @@ class ConfigToolApp(FreeseerApp):
         self.generalWidget = GeneralWidget()
         self.avWidget = AVWidget()
         self.pluginloaderWidget = PluginLoaderWidget()
-
-        # Load Config Stuff
-        self.profile = profile
-        self.storage = storage
-        self.config = config
 
         # TODO: Make a better PluginManager
         self.plugman = PluginManager(profile)
@@ -228,8 +227,7 @@ class ConfigToolApp(FreeseerApp):
             if re.match('^[\w-]+$', name):
                 # TODO: This is a hack. Instead, there should be a option to
                 # copy the current profile or something.
-                _, storage = settings.setup_profile_and_storage(str(name))
-                storage.store(self.config, 'Global')
+                pass
             else:
                 QMessageBox.information(None, "Invalid name", "Invalid characters used. Only alphanumeric and dashes allowed.")
 
@@ -284,7 +282,7 @@ class ConfigToolApp(FreeseerApp):
     def set_default_language(self, language):
         language_file = str(self.generalWidget.languageComboBox.itemData(language).toString())
         self.config.default_language = language_file
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
     def browse_video_directory(self):
         directory = self.generalWidget.recordDirLineEdit.text()
@@ -299,11 +297,11 @@ class ConfigToolApp(FreeseerApp):
 
     def update_record_directory(self):
         self.config.videodir = str(self.generalWidget.recordDirLineEdit.text())
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
     def toggle_autohide(self, state):
         self.config.auto_hide = state
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
         # Make recordapp to update it's config
         # TODO: Surely there is a better way to do this
@@ -397,11 +395,11 @@ class ConfigToolApp(FreeseerApp):
 
     def toggle_audiomixer_state(self, state):
         self.config.enable_audio_recording = state
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
     def change_audiomixer(self, audiomixer):
         self.config.audiomixer = audiomixer
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
     def setup_audio_mixer(self):
         mixer = str(self.avWidget.audioMixerComboBox.currentText())
@@ -410,11 +408,11 @@ class ConfigToolApp(FreeseerApp):
 
     def toggle_videomixer_state(self, state):
         self.config.enable_video_recording = state
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
     def change_videomixer(self, videomixer):
         self.config.videomixer = videomixer
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
     def setup_video_mixer(self):
         mixer = str(self.avWidget.videoMixerComboBox.currentText())
@@ -423,11 +421,11 @@ class ConfigToolApp(FreeseerApp):
 
     def toggle_record_to_file(self, state):
         self.config.record_to_file = state
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
     def change_file_format(self, format):
         self.config.record_to_file_plugin = format
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
     def setup_file_format(self):
         output = str(self.avWidget.fileComboBox.currentText())
@@ -436,11 +434,11 @@ class ConfigToolApp(FreeseerApp):
 
     def toggle_record_to_stream(self, state):
         self.config.record_to_stream = state
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
     def change_stream_format(self, format):
         self.config.record_to_stream_plugin = format
-        self.storage.store(self.config, 'Global')
+        self.config.save()
 
     def setup_stream_format(self):
         output = str(self.avWidget.streamComboBox.currentText())

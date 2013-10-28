@@ -23,15 +23,14 @@
 # http://wiki.github.com/Freeseer/freeseer/
 
 from freeseer import settings
-from freeseer.framework.database import QtDBConnector
 from freeseer.framework.multimedia import Multimedia
 from freeseer.framework.plugin import PluginManager
 
 
 class RecordingController:
-    def __init__(self, profile, config, cli=False):
+    def __init__(self, profile, db, config, cli=False):
         self.config = config
-        self.db = QtDBConnector(settings.configdir)
+        self.db = db
         self.plugman = PluginManager(profile)
         self.media = Multimedia(self.config, self.plugman, cli=cli)
 
