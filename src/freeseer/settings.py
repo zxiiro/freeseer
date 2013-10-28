@@ -26,7 +26,6 @@ import os
 
 from freeseer.framework.config.core import Config
 from freeseer.framework.config.profile import ProfileManager
-from freeseer.framework.config.persist import ConfigParserStorage
 import freeseer.framework.config.options as options
 
 # TODO: change to config_dir at some point
@@ -36,12 +35,6 @@ default_config_file = 'freeseer.conf'
 
 # Config objects
 profile_manager = ProfileManager(os.path.join(configdir, 'profiles'))
-
-
-def setup_profile_and_storage(name=default_profile_name, filename=default_config_file):
-    profile = profile_manager.get(name)
-    storage = ConfigParserStorage(profile, filename)
-    return profile, storage
 
 
 class FreeseerConfig(Config):

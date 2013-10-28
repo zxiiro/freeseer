@@ -90,26 +90,20 @@ class ConfigBase(abc.ABCMeta):
 class Config(object):
     __metaclass__ = ConfigBase
 
-    def __init__(self, writeback=None, writeback_args=None):
-        self._writeback = writeback
-        self._writeback_args = writeback_args
+    def __init__(self, storage=None, storage_args=None):
+        self._storage = storage
+        self._storage_args = storage_args if storage_args else []
 
         self.values = {}
         self.set_defaults()
 
-
     def _set_value(self, value, name, option):
         self.set_value(name, option, value)
-
 
     def set_defaults(self):
         for name, option in self.options.iteritems():
             if not option.is_required():
-                self.set_value(name, option, option.default, writeback=False)
-
-    def writeback_if_configured(self):
-        if self._writeback:
-            self._writeback.store(self, *self._writeback_args)
+                self.set_value(name, option, option.default)
 
     # You probably will not need to override these:
 
@@ -123,24 +117,22 @@ class Config(object):
         else:
             raise OptionValueNotSetError(name, option)
 
-    def set_value(self, name, option, value, writeback=True):
+    def set_value(self, name, option, value):
         if option.is_valid(value):
             mod_value = option.pre_set(value)
             self.values[name] = mod_value
         else:
             raise InvalidOptionValueError(name, option)
 
-        if writeback:
-            self.writeback_if_configured()
-
+    def save(self):
+        self._storage.store(self, *self._storage_args)
 
 
 class ConfigStorage(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, profile, filename):
-        self._profile = profile
-        self._filepath = profile.get_filepath(filename)
+    def __init__(self, filepath):
+        self._filepath = filepath
 
     # Override these!
 

@@ -36,22 +36,23 @@ from freeseer.framework.rss_parser import FeedParser
 log = logging.getLogger(__name__)
 
 
-class QtDBConnector():
-    presentationsModel = None
-    failuresModel = None
-    recentconnModel = None
-
-    def __init__(self, configdir, talkdb_file="presentations.db"):
+class QtDBConnector(object):
+    def __init__(self, db_filepath):
         """
         Initialize the QtDBConnector
         """
-        self.configdir = configdir
-        self.talkdb_file = os.path.abspath("%s/%s" % (self.configdir, talkdb_file))
+        self.talkdb_file = db_filepath
 
+        # TODO: See if it'll create this file for us as this seems like an
+        #       awful hack.
         if not os.path.isfile(self.talkdb_file):
             file = open(self.talkdb_file, 'w')
             file.write('')
             file.close()
+
+        self.presentationsModel = None
+        self.failuresModel = None
+        self.recentconnModel = None
 
         self.__open_table()
 
