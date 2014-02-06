@@ -1,9 +1,0 @@
-[Core]
-Name = Audio Passthrough
-Module = audiopassthrough
-
-[Documentation]
-Author = Thanh Ha
-Version = 3.0.9999
-Website = http://fosslc.org
-Description = Simple passthrough mixer for audio. Takes a single audio input and sends it through without any filtering.

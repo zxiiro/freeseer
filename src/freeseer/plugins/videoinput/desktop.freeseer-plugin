@@ -1,9 +1,0 @@
-[Core]
-Name = Desktop Source
-Module = desktop
-
-[Documentation]
-Author = Thanh Ha
-Version = 3.0.9999
-Website = http://fosslc.org
-Description = Desktop source for recording your desktop.

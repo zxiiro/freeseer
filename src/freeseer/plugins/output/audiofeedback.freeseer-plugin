@@ -1,9 +1,0 @@
-[Core]
-Name = Audio Feedback
-Module = audiofeedback
-
-[Documentation]
-Author = Thanh Ha
-Version = 3.0.9999
-Website = http://fosslc.org
-Description = Provides Audio Feedback to the user via their speakers.
