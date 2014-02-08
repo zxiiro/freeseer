@@ -21,16 +21,23 @@
   http://wiki.github.com/Freeseer/freeseer/
 */
 
-#include <QCoreApplication>
-#include <QDebug>
+#include <gst/gst.h>
+#include <glib.h>
 
-#include "multimedia.h"
+class Multimedia {
+private:
+    GMainLoop*     loop;
+    GstBus*        bus;
+    guint          bus_watch_id;
 
-int main(int argc, char *argv[])
-{
-    Multimedia multimedia;
-    multimedia.Initialize();
+    GstElement*    pipeline;
+    GstElement*    source;
+    GstElement*    videoconvert;
+    GstElement*    sink;
 
-    return 0;
+public:
+    Multimedia();
 
-}
+    void Initialize();
+    void Cleanup();
+};
