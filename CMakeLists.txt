@@ -15,8 +15,27 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
 
-# Tell CMake to create the helloworld executable
-add_executable(freeseer src/main.cpp)
+###
+### Find application sources
+###
+
+file (GLOB SRCS src/*.c src/*.cpp)
+file (GLOB HDRS src/*.h src/*.hpp)
+
+link_directories(
+)
+
+include_directories(
+        ${CMAKE_SOURCE_DIR}/include
+        )
+
+add_executable (${App_Name}
+        ${SRCS}
+        ${HDRS}
+        )
+
+target_link_libraries(${App_Name}
+)
 
 
 ###
