@@ -1,45 +1,22 @@
-language: python
-python:
-  - "2.7"
+language: cpp
+compiler:
+  - gcc
 notifications:
     irc: "irc.freenode.net#freeseer"
 virtualenv:
   system_site_packages: true
-before_install:
+before_install:  # Prepare system to install prerequisits
+  - echo 'yes' | sudo add-apt-repository ppa:gstreamer-developers/ppa
+  - echo 'yes' | sudo apt-add-repository ppa:ubuntu-sdk-team/ppa
+  - sudo apt-get -qq update
+install:  # Install prerequisits
+  - sudo apt-get -qq install cmake
+  - sudo apt-get -qq install gstreamer1.0*
+  - sudo apt-get -qq install qtdeclarative5-dev
+before_script:  # Prepare system to build / test (set environment variables)
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install libqt4-sql-sqlite python-qt4 python-qt4-dev python-qt4-sql
-  - python -c 'import PyQt4'
-  - python -c 'import PyQt4.QtCore'
-  - python -c 'import PyQt4.QtGui'
-  - sudo apt-get -qq install python-gst0.10 python-gst0.10-dev gstreamer0.10-plugins-good
-  - python -c 'import pygst'
-  - python -c 'import gst'
-  - sudo apt-get -qq install gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly
-  - sudo apt-get -qq install gstreamer0.10-pulseaudio
-  - sudo apt-get -qq install gstreamer0.10-alsa
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install:
-  - pip install -r dev_requirements.txt --use-mirrors
-  - pip install coveralls
-# command to run tests, e.g. python setup.py test
-script:
-  - pwd && cd src
-  - coverage run setup.py test
-  - coveralls || true
-  - cd ..
-  - flake8 src
-after_success:
-  # Test building deployable packages
-  - pwd && cd src
-  - python setup.py bdist_egg
-  - python setup.py sdist
-  - cd ..
-  # Test installing the built packages
-  - pwd && cd src/dist
-  - pip install freeseer-*.tar.gz
-  - echo "y" | pip uninstall freeseer
-  - easy_install freeseer-*.egg
-  - echo "y" | pip uninstall freeseer
-  - cd ../..
+script:  # Build / Run Tests
+  - pwd
+  - mkdir build && cd build
+  - cmake .. && make
