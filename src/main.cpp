@@ -21,6 +21,9 @@
   http://wiki.github.com/Freeseer/freeseer/
 */
 
+#include <thread>
+#include <chrono>
+
 #include <QCoreApplication>
 #include <QDebug>
 
@@ -28,9 +31,12 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication app(argc, argv);
+
     Multimedia multimedia;
     multimedia.Initialize();
+    std::this_thread::sleep_for (std::chrono::seconds(5));
+    multimedia.Cleanup();
 
-    return 0;
-
+    return app.exec();
 }

@@ -31,13 +31,7 @@ Multimedia::Multimedia()
 
 void Multimedia::Initialize()
 {
-    GMainLoop *loop;
-    GstElement *pipeline, *source, *videoconvert, *sink;
-    GstBus *bus;
-    guint bus_watch_id;
-
     gst_init(NULL, NULL);
-    loop = g_main_loop_new (NULL, FALSE);
 
     pipeline = gst_pipeline_new ("freeseer");
     source   = gst_element_factory_make ("ximagesrc", "desktopsrc");
@@ -54,15 +48,15 @@ void Multimedia::Initialize()
     gst_element_link (videoconvert, sink);
 
     gst_element_set_state (pipeline, GST_STATE_PLAYING);
-
     g_print ("Running...\n");
-    g_main_loop_run (loop);
+}
 
+void Multimedia::Cleanup()
+{
     g_print ("Returned, stopping playback\n");
     gst_element_set_state (pipeline, GST_STATE_NULL);
 
     g_print ("Deleting pipeline\n");
     gst_object_unref (GST_OBJECT (pipeline));
-    g_source_remove (bus_watch_id);
-    g_main_loop_unref (loop);
+    //g_source_remove (bus_watch_id);
 }

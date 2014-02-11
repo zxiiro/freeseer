@@ -26,7 +26,6 @@
 
 class Multimedia {
 private:
-    GMainLoop*     loop;
     GstBus*        bus;
     guint          bus_watch_id;
 
@@ -40,4 +39,5 @@ public:
 
     void Initialize();
     void Cleanup();
+    void Start();
 };
