@@ -14,12 +14,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
-# Enable C++11
-ADD_DEFINITIONS(
-    -std=c++11 # Or -std=c++0x
-    # Other flags
-)
-
 
 ###
 ### Find application sources
@@ -52,7 +46,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 
 find_package(Qt5Widgets)
-qt5_use_modules(freeseer Widgets)
+find_package(Qt5Declarative)
+qt5_use_modules(freeseer Widgets Declarative Quick)
 
 
 find_package(GStreamer)
@@ -88,3 +83,7 @@ target_link_libraries(${App_Name}
     ${GLIB_LIBRARIES}
     ${TARGET_LINK_LIBRARIES}
     )
+
+
+## Copy QML to output
+file(COPY "${CMAKE_SOURCE_DIR}/src/application.qml" DESTINATION "${CMAKE_BINARY_DIR}")

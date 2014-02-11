@@ -21,24 +21,15 @@
   http://wiki.github.com/Freeseer/freeseer/
 */
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QThread>
+import QtQuick 2.0
 
-#include "multimedia.h"
+Rectangle {
+    width: 400
+    height: 200
+    color: red
 
-int main(int argc, char *argv[])
-{
-    QGuiApplication app(argc, argv);
-
-    QQuickView view;
-    view.setSource(QUrl::fromLocalFile("application.qml"));
-    view.show();
-
-    Multimedia multimedia;
-    multimedia.Initialize();
-    QThread::sleep(5);
-    multimedia.Cleanup();
-
-    return app.exec();
+    Text {
+        anchors.centerIn: parent
+        text: "Freeseer main window"
+    }
 }
