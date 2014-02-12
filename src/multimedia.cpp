@@ -46,17 +46,23 @@ void Multimedia::Initialize()
                     source, videoconvert, sink, NULL);
     gst_element_link (source, videoconvert);
     gst_element_link (videoconvert, sink);
-
-    gst_element_set_state (pipeline, GST_STATE_PLAYING);
-    g_print ("Running...\n");
 }
 
 void Multimedia::Cleanup()
 {
-    g_print ("Returned, stopping playback\n");
-    gst_element_set_state (pipeline, GST_STATE_NULL);
-
     g_print ("Deleting pipeline\n");
     gst_object_unref (GST_OBJECT (pipeline));
     //g_source_remove (bus_watch_id);
+}
+
+void Multimedia::Start()
+{
+    gst_element_set_state (pipeline, GST_STATE_PLAYING);
+    g_print ("Running...\n");
+}
+
+void Multimedia::Stop()
+{
+    g_print ("Returned, stopping playback\n");
+    gst_element_set_state (pipeline, GST_STATE_NULL);
 }

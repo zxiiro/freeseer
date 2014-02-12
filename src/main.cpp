@@ -37,7 +37,9 @@ int main(int argc, char *argv[])
 
     Multimedia multimedia;
     multimedia.Initialize();
+    multimedia.Start();
     QThread::sleep(5);
+    multimedia.Stop();
     multimedia.Cleanup();
 
     return app.exec();

@@ -40,4 +40,5 @@ public:
     void Initialize();
     void Cleanup();
     void Start();
+    void Stop();
 };
