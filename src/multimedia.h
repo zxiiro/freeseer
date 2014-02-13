@@ -24,15 +24,14 @@
 #include <gst/gst.h>
 #include <glib.h>
 
+#include "recorder.h"
+
 class Multimedia {
 private:
     GstBus*        bus;
     guint          bus_watch_id;
 
-    GstElement*    pipeline;
-    GstElement*    source;
-    GstElement*    videoconvert;
-    GstElement*    sink;
+    Recorder       recorder;
 
 public:
     Multimedia();
@@ -41,4 +40,9 @@ public:
     void Cleanup();
     void Start();
     void Stop();
+
+    void LoadPipeline();
+    void LoadVideoSrc();
+    void ChangeVideoSrc();
+    static GstPadProbeReturn ChangeVideoSrcCB(GstPad * pad, GstPadProbeInfo * info, gpointer user_data);
 };

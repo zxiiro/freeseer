@@ -21,30 +21,17 @@
   http://wiki.github.com/Freeseer/freeseer/
 */
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QThread>
+#include <gst/gst.h>
+#include <glib.h>
 
-#include "multimedia.h"
+class Recorder {
+public:
+    GstElement*    pipeline_;
+    GstElement*    source_;
+    GstElement*    videoconvert_;
+    GstElement*    sink_;
 
-int main(int argc, char *argv[])
-{
-    QGuiApplication app(argc, argv);
+public:
+    Recorder();
 
-    QQuickView view;
-    view.setSource(QUrl::fromLocalFile("application.qml"));
-    view.show();
-
-    Multimedia multimedia;
-    multimedia.Initialize();
-    multimedia.LoadPipeline();
-    multimedia.LoadVideoSrc();
-    multimedia.Start();
-    QThread::sleep(10);
-    multimedia.ChangeVideoSrc();
-    QThread::sleep(10);
-    multimedia.Stop();
-    multimedia.Cleanup();
-
-    return app.exec();
-}
+};
